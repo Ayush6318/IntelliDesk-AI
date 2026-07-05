@@ -1,30 +1,25 @@
 from langchain.agents import create_agent
 
-from tools.calculator import calculator
+from tools import TOOLS
 from prompts.system_prompt import SYSTEM_PROMPT
 
 import os
 from langchain_groq import ChatGroq
+from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
-
-from langchain.agents.middleware import ProviderToolSearchMiddleware
 
 load_dotenv()
 
-GROQ_API_KEY=os.getenv('GROQ_API_KEY')
-model = ChatGroq(
-    groq_api_key= GROQ_API_KEY,
-    model="llama-3.1-8b-instant")
+GOOGLE_API_KEY=os.getenv('GOOGLE_API_KEY')
 
+model = ChatGoogleGenerativeAI(
+  model = 'gemini-2.5-flash',
+  temperature = 0,
+)
 
 agent = create_agent(
   model,
-  tools=[calculator],
+  tools=TOOLS,
   system_prompt=SYSTEM_PROMPT,
-  middleware=[
-    ProviderToolSearchMiddleware(
-      searchable_tools=['calculator']
-    )
-  ]
 )
 
